@@ -4,27 +4,18 @@ Claude Code Agent Skill for filtering Prometheus metrics using [metricsifter](ht
 
 Automatically extracts only fault-related metrics from large sets of Prometheus metrics using change-point detection and KDE density analysis.
 
-## Data Flow
+## Installation
 
-```
-mcp-grafana (query_prometheus)
-  → Prometheus range query JSON
-    → scripts/sift_metrics.py
-      → metricsifter (change-point detection + KDE)
-        → fault-related metrics only
-```
-
-## Setup
-
-### 1. Python Dependencies
+### 1. Install the skill
 
 ```bash
-uv sync
+git clone https://github.com/yuuki/agent-metricsifter ~/.claude/skills/metricsifter
+cd ~/.claude/skills/metricsifter && uv sync
 ```
 
-### 2. mcp-grafana
+### 2. Configure mcp-grafana
 
-Add to Claude Code MCP server configuration:
+Add to your Claude Code MCP server configuration (`.claude/settings.json`):
 
 ```json
 {
@@ -50,6 +41,7 @@ Invoke `/metricsifter` in Claude Code, or ask to analyze and filter Prometheus m
 ### Standalone Script
 
 ```bash
+cd ~/.claude/skills/metricsifter
 uv run python scripts/sift_metrics.py --input prometheus_data.json
 ```
 
@@ -63,8 +55,20 @@ uv run python scripts/sift_metrics.py --input prometheus_data.json
 | `--bandwidth` | 2.5 | KDE bandwidth |
 | `--n-jobs` | 1 | Number of parallel workers |
 
-## Test
+## Data Flow
+
+```
+mcp-grafana (query_prometheus)
+  → Prometheus range query JSON
+    → scripts/sift_metrics.py
+      → metricsifter (change-point detection + KDE)
+        → fault-related metrics only
+```
+
+## Development
 
 ```bash
+uv sync --all-extras
 uv run pytest tests/ -v
+uv run ruff check .
 ```

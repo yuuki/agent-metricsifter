@@ -7,6 +7,8 @@ description: Use when analyzing Prometheus metrics during incident investigation
 
 Automatically extract only fault-related metrics from Prometheus. Uses change-point detection + KDE density analysis to keep only the metrics that changed during the fault period.
 
+**Skill directory**: The directory containing this SKILL.md is referred to as `SKILL_DIR` below. Resolve it before running any scripts.
+
 ## Workflow
 
 ### Step 1: Confirm Parameters
@@ -63,8 +65,10 @@ The script accepts both the bare result array and the full envelope format `{"st
 ### Step 3: Run Filtering
 
 ```bash
-uv run python scripts/sift_metrics.py --input $TMPDIR/prometheus_metrics.json
+uv run --directory SKILL_DIR python SKILL_DIR/scripts/sift_metrics.py --input $TMPDIR/prometheus_metrics.json
 ```
+
+Replace `SKILL_DIR` with the absolute path of the directory containing this SKILL.md file.
 
 **Options**:
 - `--penalty-adjust 2.0` -- sensitivity (higher = stricter filter)
