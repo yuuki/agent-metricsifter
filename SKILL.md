@@ -25,7 +25,7 @@ Confirm the following with the user (ask interactively if unknown):
 | penalty_adjust | No | 2.0 | Filtering sensitivity (higher = stricter) |
 
 - If `datasourceUid` is unknown, search for the Prometheus datasource using `list_datasources`
-- Ensure time range / stepSeconds >= 30 (at least 30 data points required)
+- Recommended: time range / stepSeconds >= 30 (at least 30 data points for reliable change-point detection)
 
 ### Step 2: Fetch Metrics
 
@@ -93,6 +93,6 @@ If the user requests:
 
 ## Common Mistakes
 
-- **Insufficient data points**: stepSeconds too large causes insufficient data for change-point detection. Maintain time range / stepSeconds >= 30
+- **Insufficient data points**: stepSeconds too large causes insufficient data for change-point detection. Aim for time range / stepSeconds >= 30
 - **penalty_adjust too high**: all metrics get filtered out. Adjust within 1.0 - 3.0 range
 - **PromQL too broad**: queries like `{__name__=~".+"}` can return extremely large responses. Narrow the scope
