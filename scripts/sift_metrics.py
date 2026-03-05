@@ -17,7 +17,6 @@ import sys
 from pathlib import Path
 
 import pandas as pd
-from metricsifter.sifter import Sifter
 
 # Allow importing the sibling module without package installation.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -44,7 +43,11 @@ def _load_input(path: str) -> list[dict]:
 
     # Accept both the full Prometheus response envelope and the bare result array.
     if isinstance(raw, dict):
-        raw = raw.get("data", raw).get("result", raw)
+        data = raw.get("data")
+        if isinstance(data, dict):
+            raw = data.get("result", data)
+        else:
+            raise ValueError("Expected {\"data\": {\"result\": [...]}} or a JSON array")
     if not isinstance(raw, list):
         raise ValueError("Input must be a JSON array (Prometheus data.result)")
     return raw
@@ -68,6 +71,8 @@ def run(argv: list[str] | None = None) -> dict:
 
     df = prometheus_result_to_dataframe(result)
     input_metrics = list(df.columns)
+
+    from metricsifter.sifter import Sifter
 
     sifter = Sifter(
         search_method=args.search_method,
