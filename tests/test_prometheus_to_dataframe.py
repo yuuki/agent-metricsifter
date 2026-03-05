@@ -46,6 +46,18 @@ class TestBuildMetricLabel:
         result = build_metric_label({"__name__": "m", "z": "1", "a": "2"})
         assert result == 'm{a="2",z="1"}'
 
+    def test_escape_quotes_in_value(self):
+        result = build_metric_label({"__name__": "m", "path": '/a"b'})
+        assert result == 'm{path="/a\\"b"}'
+
+    def test_escape_backslash_in_value(self):
+        result = build_metric_label({"__name__": "m", "path": "a\\b"})
+        assert result == 'm{path="a\\\\b"}'
+
+    def test_escape_newline_in_value(self):
+        result = build_metric_label({"__name__": "m", "msg": "line1\nline2"})
+        assert result == 'm{msg="line1\\nline2"}'
+
 
 # -- prometheus_result_to_dataframe -------------------------------------------
 

@@ -2,7 +2,16 @@
 
 from __future__ import annotations
 
+import logging
+
 import pandas as pd
+
+logger = logging.getLogger(__name__)
+
+
+def _escape_label_value(value: str) -> str:
+    """Escape a Prometheus label value for the ``metric{k="v"}`` notation."""
+    return value.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n")
 
 
 def build_metric_label(metric: dict[str, str]) -> str:
@@ -16,7 +25,7 @@ def build_metric_label(metric: dict[str, str]) -> str:
     labels = {k: v for k, v in sorted(metric.items()) if k != "__name__"}
     if not labels:
         return name
-    label_str = ",".join(f'{k}="{v}"' for k, v in labels.items())
+    label_str = ",".join(f'{k}="{_escape_label_value(v)}"' for k, v in labels.items())
     if name:
         return f"{name}{{{label_str}}}"
     return f"{{{label_str}}}"
@@ -44,6 +53,8 @@ def prometheus_result_to_dataframe(result: list[dict]) -> pd.DataFrame:
         values = item.get("values", [])
         if not values:
             continue
+        if label in series_dict:
+            logger.warning("Duplicate metric label %r — overwriting previous series", label)
         timestamps = [pd.Timestamp(v[0], unit="s", tz="UTC") for v in values]
         data = [float(v[1]) for v in values]
         series_dict[label] = pd.Series(data, index=timestamps, dtype="float64")
