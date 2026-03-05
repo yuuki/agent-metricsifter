@@ -1,7 +1,3 @@
-[build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "agent-metricsifter"
 version = "0.1.0"
@@ -9,12 +5,12 @@ description = "Claude Code Agent Skill for filtering Prometheus metrics using me
 requires-python = ">=3.10"
 license = "MIT"
 dependencies = [
-    "metricsifter @ git+https://github.com/ai4sre/metricsifter.git@main",
+    "metricsifter @ git+https://github.com/ai4sre/metricsifter.git@1e0ccd6040df9a27e03c75f1db210eef39d4d588",
     "pandas>=1.5.0",
     "numpy>=1.23.0",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "pytest>=7.0",
     "ruff>=0.1.0",

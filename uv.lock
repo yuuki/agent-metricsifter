@@ -14,7 +14,7 @@ resolution-markers = [
 [[package]]
 name = "agent-metricsifter"
 version = "0.1.0"
-source = { editable = "." }
+source = { virtual = "." }
 dependencies = [
     { name = "metricsifter" },
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
@@ -23,7 +23,7 @@ dependencies = [
     { name = "pandas", version = "3.0.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
 ]
 
-[package.optional-dependencies]
+[package.dev-dependencies]
 dev = [
     { name = "pytest" },
     { name = "ruff" },
@@ -31,13 +31,16 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "metricsifter", git = "https://github.com/ai4sre/metricsifter.git?rev=main" },
+    { name = "metricsifter", git = "https://github.com/ai4sre/metricsifter.git?rev=1e0ccd6040df9a27e03c75f1db210eef39d4d588" },
     { name = "numpy", specifier = ">=1.23.0" },
     { name = "pandas", specifier = ">=1.5.0" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.1.0" },
 ]
-provides-extras = ["dev"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pytest", specifier = ">=7.0" },
+    { name = "ruff", specifier = ">=0.1.0" },
+]
 
 [[package]]
 name = "colorama"
@@ -81,7 +84,7 @@ wheels = [
 [[package]]
 name = "metricsifter"
 version = "0.0.1"
-source = { git = "https://github.com/ai4sre/metricsifter.git?rev=main#1e0ccd6040df9a27e03c75f1db210eef39d4d588" }
+source = { git = "https://github.com/ai4sre/metricsifter.git?rev=1e0ccd6040df9a27e03c75f1db210eef39d4d588#1e0ccd6040df9a27e03c75f1db210eef39d4d588" }
 dependencies = [
     { name = "joblib" },
     { name = "networkx", version = "3.4.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
