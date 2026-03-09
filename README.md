@@ -20,12 +20,14 @@ git clone https://github.com/yuuki/agent-metricsifter
 ### 2. Install skills
 
 ```bash
+cd agent-metricsifter
+
 # metricsifter skill (requires Python dependencies)
-ln -s "$(pwd)/agent-metricsifter/skills/metricsifter" ~/.claude/skills/metricsifter
-cd ~/.claude/skills/metricsifter && uv sync
+ln -s "$(pwd)/skills/metricsifter" ~/.claude/skills/metricsifter
+cd ~/.claude/skills/metricsifter && uv sync && cd -
 
 # grafana-incident-dashboard skill (no additional dependencies)
-ln -s "$(pwd)/agent-metricsifter/skills/grafana-incident-dashboard" ~/.claude/skills/grafana-incident-dashboard
+ln -s "$(pwd)/skills/grafana-incident-dashboard" ~/.claude/skills/grafana-incident-dashboard
 ```
 
 ### 3. Configure mcp-grafana
