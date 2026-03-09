@@ -1,6 +1,6 @@
 # agent-metricsifter
 
-Automatic Prometheus metrics filtering skill using mcp-grafana + metricsifter.
+Agent skills for Prometheus metrics analysis and incident investigation using mcp-grafana + metricsifter.
 
 ## Prerequisites
 
@@ -10,24 +10,25 @@ Automatic Prometheus metrics filtering skill using mcp-grafana + metricsifter.
 ## Setup
 
 ```bash
-uv sync
+cd skills/metricsifter && uv sync
 ```
 
 ## Test
 
 ```bash
-uv run pytest tests/ -v
+cd skills/metricsifter && uv run pytest tests/ -v
 ```
 
 ## Lint
 
 ```bash
-uv run ruff check .
+cd skills/metricsifter && uv run ruff check .
 ```
 
 ## Usage
 
 Invoke `/metricsifter` in Claude Code, or ask to analyze and filter Prometheus metrics.
+After filtering, invoke `/grafana-incident-dashboard` to create a Grafana dashboard from the results.
 
 ## mcp-grafana Setup
 
