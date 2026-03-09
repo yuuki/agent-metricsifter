@@ -21,7 +21,7 @@ Confirm the following with the user (ask interactively if unknown):
 | PromQL / pattern | Yes | - | Target metrics to fetch |
 | startTime | Yes | - | Start time (RFC3339 or "now-1h") |
 | endTime | No | "now" | End time |
-| stepSeconds | No | 60 | Sampling interval in seconds |
+| stepSeconds | No | 15 | Sampling interval in seconds |
 | penalty_adjust | No | 2.0 | Filtering sensitivity (higher = stricter) |
 
 - If `datasourceUid` is unknown, search for the Prometheus datasource using `list_datasources`
@@ -43,7 +43,7 @@ query_prometheus(
   expr: "<promql>",
   startTime: "<start>",
   endTime: "<end>",
-  stepSeconds: 60,
+  stepSeconds: 15,
   queryType: "range"
 )
 ```
