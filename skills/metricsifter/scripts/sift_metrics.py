@@ -89,10 +89,19 @@ def run(argv: list[str] | None = None) -> dict:
 
     segment_info = None
     if segment is not None:
+        start_pos = segment.start_time
+        end_pos = segment.end_time
+        # Ensure the segment spans at least one step so that Grafana region
+        # annotations are visible instead of collapsing to a zero-width point.
+        if start_pos == end_pos:
+            if end_pos + 1 < len(df.index):
+                end_pos = end_pos + 1
+            elif start_pos - 1 >= 0:
+                start_pos = start_pos - 1
         segment_info = {
             "label": segment.label,
-            "start_time": _index_to_isoformat(df.index, segment.start_time),
-            "end_time": _index_to_isoformat(df.index, segment.end_time),
+            "start_time": _index_to_isoformat(df.index, start_pos),
+            "end_time": _index_to_isoformat(df.index, end_pos),
         }
 
     output = {

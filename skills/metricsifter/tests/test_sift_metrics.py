@@ -141,3 +141,70 @@ class TestSiftMetricsWithMockedSifter:
         expected_end = df.index[4].isoformat()
         assert result["segment"]["start_time"] == expected_start
         assert result["segment"]["end_time"] == expected_end
+
+    def test_single_point_segment_expands(self, tmp_path: Path):
+        """A segment where start_time == end_time should be expanded by one step."""
+        input_file = FIXTURES / "prometheus_range_response.json"
+
+        with open(input_file) as f:
+            raw = json.load(f)
+        from prometheus_to_dataframe import prometheus_result_to_dataframe
+
+        df = prometheus_result_to_dataframe(raw)
+
+        @dataclass
+        class FakeSegment:
+            label: int = 0
+            start_time: int = 2
+            end_time: int = 2  # single point
+
+        mock_sifter_cls = MagicMock()
+        mock_sifter_cls.return_value.run_with_selected_segment.return_value = (df, FakeSegment())
+
+        buf = StringIO()
+        with (
+            patch("sys.stdout", buf),
+            patch.dict("sys.modules", {"metricsifter": MagicMock(), "metricsifter.sifter": MagicMock(Sifter=mock_sifter_cls)}),
+        ):
+            result = run(["--input", str(input_file)])
+
+        seg = result["segment"]
+        assert seg is not None
+        # start stays at index 2, end expands to index 3
+        assert seg["start_time"] == df.index[2].isoformat()
+        assert seg["end_time"] == df.index[3].isoformat()
+        assert seg["start_time"] != seg["end_time"]
+
+    def test_single_point_segment_at_last_index(self, tmp_path: Path):
+        """A single-point segment at the last index should expand start backward."""
+        input_file = FIXTURES / "prometheus_range_response.json"
+
+        with open(input_file) as f:
+            raw = json.load(f)
+        from prometheus_to_dataframe import prometheus_result_to_dataframe
+
+        df = prometheus_result_to_dataframe(raw)
+        last_idx = len(df.index) - 1
+
+        @dataclass
+        class FakeSegment:
+            label: int = 0
+            start_time: int = last_idx
+            end_time: int = last_idx
+
+        mock_sifter_cls = MagicMock()
+        mock_sifter_cls.return_value.run_with_selected_segment.return_value = (df, FakeSegment())
+
+        buf = StringIO()
+        with (
+            patch("sys.stdout", buf),
+            patch.dict("sys.modules", {"metricsifter": MagicMock(), "metricsifter.sifter": MagicMock(Sifter=mock_sifter_cls)}),
+        ):
+            result = run(["--input", str(input_file)])
+
+        seg = result["segment"]
+        assert seg is not None
+        # end stays at last, start expands backward
+        assert seg["start_time"] == df.index[last_idx - 1].isoformat()
+        assert seg["end_time"] == df.index[last_idx].isoformat()
+        assert seg["start_time"] != seg["end_time"]
