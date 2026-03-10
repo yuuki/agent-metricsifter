@@ -13,6 +13,8 @@ Automatically extract only fault-related metrics from Prometheus. Uses change-po
 
 ### Step 1: Confirm Parameters
 
+**Check for calibrated parameters**: Before confirming parameters with the user, check if `CALIBRATION_SKILL_DIR/calibrated_params.json` exists (where `CALIBRATION_SKILL_DIR` is the sibling `metricsifter-calibration/` directory). If it exists, read `penalty_adjust` and `bandwidth` from it and use them as defaults instead of 2.0 / 2.5. Inform the user: "Using calibrated parameters: penalty_adjust=X.X, bandwidth=Y.Y (calibrated on DATE)".
+
 Confirm the following with the user (ask interactively if unknown):
 
 | Parameter | Required | Default | Description |
@@ -22,7 +24,8 @@ Confirm the following with the user (ask interactively if unknown):
 | startTime | Yes | - | Start time (RFC3339 or "now-1h") |
 | endTime | No | "now" | End time |
 | stepSeconds | No | 15 | Sampling interval in seconds |
-| penalty_adjust | No | 2.0 | Filtering sensitivity (higher = stricter) |
+| penalty_adjust | No | 2.0 | Filtering sensitivity (higher = stricter). If calibrated_params.json exists in the metricsifter-calibration skill directory, use its value as the default |
+| bandwidth | No | 2.5 | KDE bandwidth. If calibrated_params.json exists in the metricsifter-calibration skill directory, use its value as the default |
 
 - If `datasourceUid` is unknown, search for the Prometheus datasource using `list_datasources`
 - Recommended: time range / stepSeconds >= 30 (at least 30 data points for reliable change-point detection)
